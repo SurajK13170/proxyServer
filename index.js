@@ -12,7 +12,9 @@ app.use(cors());
 
 // Middleware to parse JSON request bodies
 app.use(express.json());
-
+app.get('/test', async (req, res) => {
+    res.status(200).json({ message: 'Proxy endpoint is working' });
+})
 // Proxy endpoint
 app.post('/HospiDashProxy', async (req, res) => {
     const { apiUrl, body, headers } = req.body;
