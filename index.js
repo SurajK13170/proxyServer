@@ -1,21 +1,23 @@
 const express = require('express');
-const axios = require('axios');
 const cors = require('cors');
 const moment = require('moment');
 const { v4: uuidv4 } = require('uuid');
+const getAxiosInstance = require('./axiosInstance'); // Import the singleton Axios instance
 
 const app = express();
-const port = 8080; // You can set this to any available port
+const port = 8000;
 
 // Enable CORS
 app.use(cors());
 
 // Middleware to parse JSON request bodies
 app.use(express.json());
+
+// Proxy endpoint
 app.get('/test', async (req, res) => {
     res.status(200).json({ message: 'Proxy endpoint is working' });
-})
-// Proxy endpoint
+});
+
 app.post('/HospiDashProxy', async (req, res) => {
     const { apiUrl, body, headers } = req.body;
 
@@ -35,8 +37,11 @@ app.post('/HospiDashProxy', async (req, res) => {
     };
 
     try {
+        // Get the Axios instance with keep-alive enabled
+        const axiosInstance = getAxiosInstance();
+
         // Make the axios request
-        const response = await axios({
+        const response = await axiosInstance({
             method: req.method.toLowerCase(),
             url: apiUrl,
             data: body,
